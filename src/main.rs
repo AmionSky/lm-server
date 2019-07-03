@@ -5,24 +5,32 @@ extern crate rocket;
 
 mod config;
 mod error;
+mod pages;
+mod watcher;
 
-use rocket::response::status::NotFound;
-use rocket::response::NamedFile;
-use std::path::Path;
-
-#[get("/")]
-fn index() -> &'static str {
-    "Hello, world!"
-}
-
-#[get("/video.mkv")]
-fn video() -> Result<NamedFile, NotFound<String>> {
-    let path = Path::new(
-        "e:\\Videos\\Darling in the Franxx\\Anime\\Darling in the FranXX 01 Alone and Lonesome.mkv",
-    );
-    NamedFile::open(&path).map_err(|_| NotFound(format!("Bad path: {}", path.display())))
-}
+use std::any::Any;
+use std::fmt::Display;
+use std::sync::{Arc, Mutex};
 
 fn main() {
-    rocket::ignite().mount("/", routes![index, video]).launch();
+    let cfg = necessary(config::load(config::path()));
+    necessary(config::verify(&cfg));
+
+    let cfg = Arc::new(Mutex::new(cfg));
+    let _watcher = watcher::watch(cfg.clone());
+
+    rocket::ignite()
+        .manage(cfg)
+        .mount("/", routes![pages::index, pages::video])
+        .launch();
+}
+
+fn necessary<T: Any, E: Display>(result: Result<T, E>) -> T {
+    match result {
+        Ok(value) => value,
+        Err(error) => {
+            eprintln!("Fatal Error: {}", error);
+            std::process::exit(1);
+        }
+    }
 }

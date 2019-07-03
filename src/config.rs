@@ -66,8 +66,8 @@ pub fn verify(config: &Config) -> Result<(), LmSrvError> {
     Ok(())
 }
 
-/// Gets the config file path. Determined by command-line argument.
-/// Defaults to "lm-server.json".
+/// Gets the config file path.
+/// Determined by command-line argument or defaults to "lm-server.json".
 pub fn path() -> PathBuf {
     PathBuf::from(
         std::env::args()

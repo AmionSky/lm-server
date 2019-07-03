@@ -1,0 +1,21 @@
+[package]
+name = "lm-server"
+version = "0.1.0"
+authors = ["Csányi István <csanyistvan02@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+serde = { version = "1.0.94", features = ["derive"] }
+serde_json = "1.0.40"
+rocket = "0.4.2"
+
+[profile.release]
+opt-level = 3
+debug = false
+rpath = false
+lto = true
+debug-assertions = false
+codegen-units = 1
+panic = 'abort'
+incremental = false
+overflow-checks = false

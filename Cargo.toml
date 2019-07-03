@@ -10,6 +10,11 @@ serde_json = "1.0.40"
 rocket = "0.4.2"
 hotwatch = "0.4.2"
 
+[dependencies.rocket_contrib]
+version = "0.4.2"
+default-features = false
+features = ["json"]
+
 [profile.release]
 opt-level = 3
 debug = false

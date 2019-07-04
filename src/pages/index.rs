@@ -1,39 +1,31 @@
 use crate::config::Config;
-use rocket::response::status::NotFound;
-use rocket::response::NamedFile;
 use rocket::State;
 use rocket_contrib::json::Json;
 use serde::Serialize;
-use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
 #[derive(Serialize)]
-pub struct Index {
-    pub media_list: Vec<ListItem>,
+pub struct IndexResponse {
+    pub media_list: Vec<IndexListItem>,
 }
 
 #[derive(Serialize)]
-pub struct ListItem {
+pub struct IndexListItem {
+    pub uid: String,
     pub name: String,
 }
 
 #[get("/")]
-pub fn index(config: State<Arc<Mutex<Config>>>) -> Json<Index> {
+pub fn index(config: State<Arc<Mutex<Config>>>) -> Option<Json<IndexResponse>> {
+    let cfg = config.lock().ok()?;
     let mut list = vec![];
 
-    for media_group in &config.lock().unwrap().shared {
-        list.push(ListItem {
-            name: media_group.name.clone(),
+    for (uid, mg) in &cfg.shared {
+        list.push(IndexListItem {
+            uid: uid.clone(),
+            name: mg.name.clone(),
         })
     }
 
-    Json(Index { media_list: list })
-}
-
-#[get("/video.mkv")]
-pub fn video() -> Result<NamedFile, NotFound<String>> {
-    let path = Path::new(
-        "e:\\Videos\\Darling in the Franxx\\Anime\\Darling in the FranXX 01 Alone and Lonesome.mkv",
-    );
-    NamedFile::open(&path).map_err(|_| NotFound(format!("Bad path: {}", path.display())))
+    Some(Json(IndexResponse { media_list: list }))
 }

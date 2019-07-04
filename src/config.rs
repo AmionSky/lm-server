@@ -1,6 +1,7 @@
 use crate::error::LmSrvError;
 use serde::{Deserialize, Serialize};
 use serde_json as json;
+use std::collections::HashMap;
 use std::error::Error;
 use std::fs::File;
 use std::path::{Path, PathBuf};
@@ -9,8 +10,8 @@ use std::path::{Path, PathBuf};
 pub struct Config {
     /// Port the server should start on
     pub port: u16,
-    /// Shared media group
-    pub shared: Vec<MediaGroup>,
+    /// Shared media groups
+    pub shared: HashMap<String, MediaGroup>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -45,15 +46,19 @@ pub fn load<P: AsRef<Path>>(path: P) -> Result<Config, Box<dyn Error>> {
 
 /// Runs a basic check on the config
 pub fn verify(config: &Config) -> Result<(), LmSrvError> {
-    for share in &config.shared {
-        if share.name.is_empty() {
+    for (uid, mg) in &config.shared {
+        if uid.is_empty() {
+            return Err(LmSrvError::new("config", "Unique ID is empty!".into()));
+        }
+
+        if mg.name.is_empty() {
             return Err(LmSrvError::new(
                 "config",
                 "MediaGroup name is empty!".into(),
             ));
         }
 
-        if !share.path.is_dir() {
+        if !mg.path.is_dir() {
             return Err(LmSrvError::new(
                 "config",
                 "MediaGroup path is not valid or isn't a directory!".into(),

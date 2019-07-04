@@ -21,7 +21,16 @@ fn main() {
 
     rocket::ignite()
         .manage(cfg)
-        .mount("/", routes![pages::index::index])
+        .mount(
+            "/",
+            routes![
+                pages::index::index,
+                pages::cover::cover,
+                pages::group::group,
+                pages::video::video,
+                pages::sub::sub
+            ],
+        )
         .launch();
 }
 

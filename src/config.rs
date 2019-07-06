@@ -24,8 +24,6 @@ pub struct MediaGroup {
     pub subs: Option<Subtitle>,
     /// Optional path to the cover image
     pub cover: Option<String>,
-    /// Optional regex to convert the media file names
-    pub namerex: Option<String>,
 }
 
 /// Subtitle config for a media group.

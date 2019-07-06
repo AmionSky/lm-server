@@ -1,10 +1,9 @@
-use crate::config::Config;
+use crate::SharedConfig;
 use rocket::http::RawStr;
 use rocket::State;
 use rocket_contrib::json::Json;
 use serde::Serialize;
 use std::path::Path;
-use std::sync::{Arc, Mutex};
 
 const VIDEO_EXT: [&str; 3] = [".mkv", ".mp4", ".avi"];
 
@@ -19,8 +18,8 @@ pub struct VideoDetails {
 }
 
 #[get("/group/<uid>")]
-pub fn group(config: State<Arc<Mutex<Config>>>, uid: &RawStr) -> Option<Json<GroupResponse>> {
-    let cfg = config.lock().ok()?;
+pub fn group(config: State<SharedConfig>, uid: &RawStr) -> Option<Json<GroupResponse>> {
+    let cfg = config.read().unwrap();
     let group = &cfg.shared.get(uid.as_str())?;
     let videos = query_dir(&group.path).ok()?;
     Some(Json(GroupResponse { videos }))

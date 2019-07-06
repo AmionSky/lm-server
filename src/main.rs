@@ -8,15 +8,18 @@ mod error;
 mod pages;
 mod watcher;
 
+use config::Config;
 use std::any::Any;
 use std::fmt::Display;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, RwLock};
+
+type SharedConfig = Arc<RwLock<Config>>;
 
 fn main() {
     let cfg = necessary(config::load(config::path()));
     necessary(config::verify(&cfg));
 
-    let cfg = Arc::new(Mutex::new(cfg));
+    let cfg = Arc::new(RwLock::new(cfg));
     let _watcher = necessary(watcher::watch(cfg.clone()));
 
     rocket::ignite()

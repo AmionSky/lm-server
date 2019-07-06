@@ -1,8 +1,7 @@
-use crate::config::Config;
+use crate::SharedConfig;
 use rocket::State;
 use rocket_contrib::json::Json;
 use serde::Serialize;
-use std::sync::{Arc, Mutex};
 
 #[derive(Serialize)]
 pub struct IndexResponse {
@@ -16,8 +15,8 @@ pub struct IndexListItem {
 }
 
 #[get("/")]
-pub fn index(config: State<Arc<Mutex<Config>>>) -> Option<Json<IndexResponse>> {
-    let cfg = config.lock().ok()?;
+pub fn index(config: State<SharedConfig>) -> Option<Json<IndexResponse>> {
+    let cfg = config.read().unwrap();
     let mut list = vec![];
 
     for (uid, mg) in &cfg.shared {

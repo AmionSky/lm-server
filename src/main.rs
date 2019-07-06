@@ -9,17 +9,18 @@ mod pages;
 mod watcher;
 
 use config::Config;
+use crossbeam_utils::sync::ShardedLock;
 use std::any::Any;
 use std::fmt::Display;
-use std::sync::{Arc, RwLock};
+use std::sync::Arc;
 
-type SharedConfig = Arc<RwLock<Config>>;
+type SharedConfig = Arc<ShardedLock<Config>>;
 
 fn main() {
     let cfg = necessary(config::load(config::path()));
     necessary(config::verify(&cfg));
 
-    let cfg = Arc::new(RwLock::new(cfg));
+    let cfg = Arc::new(ShardedLock::new(cfg));
     let _watcher = necessary(watcher::watch(cfg.clone()));
 
     rocket::ignite()

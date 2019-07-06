@@ -17,7 +17,7 @@ fn main() {
     necessary(config::verify(&cfg));
 
     let cfg = Arc::new(Mutex::new(cfg));
-    let _watcher = watcher::watch(cfg.clone());
+    let _watcher = necessary(watcher::watch(cfg.clone()));
 
     rocket::ignite()
         .manage(cfg)

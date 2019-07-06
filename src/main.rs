@@ -5,6 +5,7 @@ extern crate rocket;
 
 mod config;
 mod error;
+mod ignite;
 mod pages;
 mod watcher;
 
@@ -23,19 +24,7 @@ fn main() {
     let cfg = Arc::new(ShardedLock::new(cfg));
     let _watcher = necessary(watcher::watch(cfg.clone()));
 
-    rocket::ignite()
-        .manage(cfg)
-        .mount(
-            "/",
-            routes![
-                pages::index::index,
-                pages::cover::cover,
-                pages::group::group,
-                pages::video::video,
-                pages::sub::sub
-            ],
-        )
-        .launch();
+    necessary(ignite::start(cfg));
 }
 
 fn necessary<T: Any, E: Display>(result: Result<T, E>) -> T {

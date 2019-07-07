@@ -4,7 +4,7 @@ version = "0.1.0"
 authors = ["Csányi István <csanyistvan02@gmail.com>"]
 readme = "README.md"
 license = "GPL-3.0-only"
-repository = "https://github.com/Pisti01/lm-server"
+repository = "https://github.com/AmionSky/lm-server"
 edition = "2018"
 
 # Dependencies

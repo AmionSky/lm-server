@@ -1,4 +1,5 @@
 #![feature(proc_macro_hygiene, decl_macro)]
+#![windows_subsystem = "windows"]
 
 #[macro_use]
 extern crate rocket;

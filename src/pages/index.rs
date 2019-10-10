@@ -12,6 +12,7 @@ pub struct IndexResponse {
 pub struct IndexListItem {
     pub uid: String,
     pub name: String,
+    pub has_cover: bool,
 }
 
 #[get("/")]
@@ -23,6 +24,7 @@ pub fn index(config: State<SharedConfig>) -> Option<Json<IndexResponse>> {
         list.push(IndexListItem {
             uid: uid.clone(),
             name: mg.name.clone(),
+            has_cover: mg.cover.is_some(),
         })
     }
 

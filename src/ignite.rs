@@ -1,32 +1,26 @@
 use crate::pages::*;
 use crate::SharedConfig;
+use actix_web::{App, HttpServer};
 use get_if_addrs::{get_if_addrs, IfAddr};
-use rocket::config::{Config, Environment};
-use std::error::Error;
 use std::io::ErrorKind;
 use std::net::IpAddr;
 
-pub fn start(app_cfg: SharedConfig) -> Result<(), Box<dyn Error>> {
-    let rocket_cfg = Config::build(Environment::Production)
-        .address(get_local_ip()?.to_string())
-        .port(app_cfg.read().unwrap().port)
-        .finalize()?;
+#[actix_rt::main]
+pub async fn start(app_cfg: SharedConfig) -> std::io::Result<()> {
+    let ip = format!("{}:{}", get_local_ip()?, app_cfg.read().unwrap().port);
 
-    rocket::custom(rocket_cfg)
-        .manage(app_cfg)
-        .mount(
-            "/",
-            routes![
-                index::index,
-                cover::cover,
-                group::group,
-                video::video,
-                sub::sub
-            ],
-        )
-        .launch();
-
-    Ok(())
+    HttpServer::new(move || {
+        App::new()
+            .data(app_cfg.clone())
+            .service(index::index)
+            .service(group::group)
+            .service(cover::cover)
+            .service(video::video)
+            .service(sub::sub)
+    })
+    .bind(ip)?
+    .run()
+    .await
 }
 
 fn get_local_ip() -> Result<IpAddr, std::io::Error> {

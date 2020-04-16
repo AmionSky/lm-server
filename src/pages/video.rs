@@ -1,12 +1,15 @@
 use crate::SharedConfig;
-use rocket::http::RawStr;
-use rocket::response::NamedFile;
-use rocket::State;
+use actix_files::NamedFile;
+use actix_web::{get, web};
+use percent_encoding::percent_decode_str;
 
-#[get("/video/<uid>/<file>")]
-pub fn video(config: State<SharedConfig>, uid: &RawStr, file: &RawStr) -> Option<NamedFile> {
-    let file = file.percent_decode().ok()?;
+#[get("/video/{uid}/{file}")]
+pub async fn video(
+    config: web::Data<SharedConfig>,
+    info: web::Path<(String, String)>,
+) -> Option<NamedFile> {
+    let file = percent_decode_str(&info.1).decode_utf8().ok()?;
     let cfg = config.read().unwrap();
-    let path = &cfg.shared.get(uid.as_str())?.path;
+    let path = &cfg.shared.get(info.0.as_str())?.path;
     NamedFile::open(path.join(file.to_string())).ok()
 }

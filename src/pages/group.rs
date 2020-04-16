@@ -1,7 +1,6 @@
 use crate::SharedConfig;
-use rocket::http::RawStr;
-use rocket::State;
-use rocket_contrib::json::Json;
+use actix_web::{get, web, Error, HttpRequest, HttpResponse, Responder};
+use futures::future::{ready, Ready};
 use serde::Serialize;
 use std::path::Path;
 
@@ -12,17 +11,34 @@ pub struct GroupResponse {
     pub videos: Vec<VideoDetails>,
 }
 
+impl Responder for GroupResponse {
+    type Error = Error;
+    type Future = Ready<Result<HttpResponse, Error>>;
+
+    fn respond_to(self, _req: &HttpRequest) -> Self::Future {
+        let body = serde_json::to_string(&self).unwrap();
+
+        // Create response and set content type
+        ready(Ok(HttpResponse::Ok()
+            .content_type("application/json")
+            .body(body)))
+    }
+}
+
 #[derive(Serialize)]
 pub struct VideoDetails {
     pub name: String,
 }
 
-#[get("/group/<uid>")]
-pub fn group(config: State<SharedConfig>, uid: &RawStr) -> Option<Json<GroupResponse>> {
+#[get("/group/{uid}")]
+pub async fn group(
+    config: web::Data<SharedConfig>,
+    uid: web::Path<String>,
+) -> Option<GroupResponse> {
     let cfg = config.read().unwrap();
     let group = &cfg.shared.get(uid.as_str())?;
     let videos = query_dir(&group.path).ok()?;
-    Some(Json(GroupResponse { videos }))
+    Some(GroupResponse { videos })
 }
 
 /// Returns the name of all video files in the specified directory

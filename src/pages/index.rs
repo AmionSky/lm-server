@@ -1,11 +1,25 @@
 use crate::SharedConfig;
-use rocket::State;
-use rocket_contrib::json::Json;
+use actix_web::{get, web, Error, HttpRequest, HttpResponse, Responder};
+use futures::future::{ready, Ready};
 use serde::Serialize;
 
 #[derive(Serialize)]
 pub struct IndexResponse {
     pub media_list: Vec<IndexListItem>,
+}
+
+impl Responder for IndexResponse {
+    type Error = Error;
+    type Future = Ready<Result<HttpResponse, Error>>;
+
+    fn respond_to(self, _req: &HttpRequest) -> Self::Future {
+        let body = serde_json::to_string(&self).unwrap();
+
+        // Create response and set content type
+        ready(Ok(HttpResponse::Ok()
+            .content_type("application/json")
+            .body(body)))
+    }
 }
 
 #[derive(Serialize)]
@@ -16,7 +30,7 @@ pub struct IndexListItem {
 }
 
 #[get("/")]
-pub fn index(config: State<SharedConfig>) -> Option<Json<IndexResponse>> {
+pub async fn index(config: web::Data<SharedConfig>) -> Option<IndexResponse> {
     let cfg = config.read().unwrap();
     let mut list = vec![];
 
@@ -28,5 +42,5 @@ pub fn index(config: State<SharedConfig>) -> Option<Json<IndexResponse>> {
         })
     }
 
-    Some(Json(IndexResponse { media_list: list }))
+    Some(IndexResponse { media_list: list })
 }

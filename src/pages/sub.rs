@@ -1,13 +1,16 @@
 use crate::SharedConfig;
-use rocket::http::RawStr;
-use rocket::response::NamedFile;
-use rocket::State;
+use actix_files::NamedFile;
+use actix_web::{get, web};
+use percent_encoding::percent_decode_str;
 
-#[get("/sub/<uid>/<file>")]
-pub fn sub(config: State<SharedConfig>, uid: &RawStr, file: &RawStr) -> Option<NamedFile> {
-    let file = file.percent_decode().ok()?;
+#[get("/sub/{uid}/{file}")]
+pub async fn sub(
+    config: web::Data<SharedConfig>,
+    info: web::Path<(String, String)>,
+) -> Option<NamedFile> {
+    let file = percent_decode_str(&info.1).decode_utf8().ok()?;
     let cfg = config.read().unwrap();
-    let subs = &cfg.shared.get(uid.as_str())?.subs;
+    let subs = &cfg.shared.get(info.0.as_str())?.subs;
     match subs {
         Some(subs) => {
             let mut sub_path = subs.path.join(file.to_string());

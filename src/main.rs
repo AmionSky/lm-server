@@ -1,8 +1,4 @@
-#![feature(proc_macro_hygiene, decl_macro)]
 #![windows_subsystem = "windows"]
-
-#[macro_use]
-extern crate rocket;
 
 mod config;
 mod error;
@@ -24,5 +20,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let cfg = Arc::new(ShardedLock::new(cfg));
     let _watcher = watcher::watch(cfg.clone())?;
 
-    ignite::start(cfg)
+    ignite::start(cfg)?;
+
+    Ok(())
 }

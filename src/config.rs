@@ -55,16 +55,6 @@ pub fn verify(config: &Config) -> Result<(), LmSrvError> {
                 "MediaGroup name is empty!".into(),
             ));
         }
-
-        // Accept config even if a path does not exist
-        // if !mg.path.is_dir() {
-        //     return Err(LmSrvError::new(
-        //         "config",
-        //         "MediaGroup path is not valid or isn't a directory!".into(),
-        //     ));
-        // }
-
-        // TODO other checks
     }
 
     Ok(())

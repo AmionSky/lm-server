@@ -31,7 +31,7 @@ pub struct IndexListItem {
 
 #[get("/")]
 pub async fn index(config: web::Data<SharedConfig>) -> Option<IndexResponse> {
-    let cfg = config.read().unwrap();
+    let cfg = config.read().ok()?;
     let mut list = vec![];
 
     for (uid, mg) in &cfg.shared {

@@ -35,7 +35,7 @@ pub async fn group(
     config: web::Data<SharedConfig>,
     uid: web::Path<String>,
 ) -> Option<GroupResponse> {
-    let cfg = config.read().unwrap();
+    let cfg = config.read().ok()?;
     let group = &cfg.shared.get(uid.as_str())?;
     let videos = query_dir(&group.path).ok()?;
     Some(GroupResponse { videos })

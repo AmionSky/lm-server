@@ -35,11 +35,13 @@ pub async fn index(config: web::Data<SharedConfig>) -> Option<IndexResponse> {
     let mut list = vec![];
 
     for (uid, mg) in &cfg.shared {
-        list.push(IndexListItem {
-            uid: uid.clone(),
-            name: mg.name.clone(),
-            has_cover: mg.cover.is_some(),
-        })
+        if mg.path.exists() {
+            list.push(IndexListItem {
+                uid: uid.clone(),
+                name: mg.name.clone(),
+                has_cover: mg.cover.is_some(),
+            });
+        }
     }
 
     Some(IndexResponse { media_list: list })

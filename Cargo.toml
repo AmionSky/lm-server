@@ -15,8 +15,8 @@ crossbeam-utils = "0.7.2"
 get_if_addrs = "0.5.3"
 actix-web = "2.0"
 actix-rt = "1.1"
-actix-files = "0.2.1"
-futures = "0.3.4"
+actix-files = "0.2.2"
+futures = "0.3.5"
 
 [profile.release]
 opt-level = 3

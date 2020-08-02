@@ -12,6 +12,8 @@ pub struct Config {
     pub port: u16,
     /// Shared media groups
     pub shared: HashMap<String, MediaGroup>,
+    /// Music library location
+    pub music: PathBuf
 }
 
 #[derive(Serialize, Deserialize, Debug)]

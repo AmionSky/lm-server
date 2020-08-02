@@ -17,6 +17,10 @@ actix-web = "2.0"
 actix-rt = "1.1"
 actix-files = "0.2.2"
 futures = "0.3.5"
+simplelog = "0.8.0"
+
+[target.'cfg(target_os="windows")'.dependencies]
+winapi = { version = "0.3", features = ["wincon"] }
 
 [profile.release]
 opt-level = 3

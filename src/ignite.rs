@@ -1,5 +1,6 @@
 use crate::pages::*;
 use crate::SharedConfig;
+use actix_files::Files;
 use actix_web::{App, HttpServer};
 use get_if_addrs::{get_if_addrs, IfAddr};
 use std::io::ErrorKind;
@@ -17,6 +18,11 @@ pub async fn start(app_cfg: SharedConfig) -> std::io::Result<()> {
             .service(cover::cover)
             .service(video::video)
             .service(sub::sub)
+            .service(
+                Files::new("/webapp", "webapp")
+                    .index_file("index.html")
+                    .redirect_to_slash_directory(),
+            )
     })
     .bind(ip)?
     .run()

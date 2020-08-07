@@ -8,9 +8,9 @@ mod watcher;
 
 use config::Config;
 use crossbeam_utils::sync::ShardedLock;
+use simplelog::{Config as LoggerConfig, LevelFilter, TermLogger, TerminalMode};
 use std::error::Error;
 use std::sync::Arc;
-use simplelog::{TermLogger,LevelFilter,TerminalMode,Config as LoggerConfig};
 
 type SharedConfig = Arc<ShardedLock<Config>>;
 
@@ -18,7 +18,11 @@ fn main() -> Result<(), Box<dyn Error>> {
     #[cfg(target_os = "windows")]
     attach_console();
 
-    TermLogger::init(LevelFilter::Debug, LoggerConfig::default(), TerminalMode::Mixed)?;
+    TermLogger::init(
+        LevelFilter::Debug,
+        LoggerConfig::default(),
+        TerminalMode::Mixed,
+    )?;
 
     let cfg = config::load(config::path())?;
     config::verify(&cfg)?;

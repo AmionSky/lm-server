@@ -1,0 +1,92 @@
+#mg-grid {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: row;
+}
+
+#mg-cover {
+    position: absolute;
+    overflow: hidden;
+    width: 35%;
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#mg-cover>#mg-cover-shadow {
+    position: absolute;
+    left: 0px;
+    background: linear-gradient(to left,
+        rgba(51, 53, 64, 1.000) 0%,
+        rgba(51, 53, 64, 0.000) 40%
+    );
+    width: 100%;
+    height: 100%;
+}
+
+#mg-videos {
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    padding-left: calc(35% + 10px);
+    padding-right: 10px;
+    padding-top: 10px;
+}
+
+.mg-videos-item {
+    font-family: 'Noto Sans';
+    font-size: 14px;
+    display: flex;
+    flex: 0 0 auto;
+    margin-bottom: 10px;
+    align-items: center;
+    background-color: #474a59;
+    border: 0px solid #474a59;
+    border-radius: 4px;
+    padding: 0px;
+    color: white;
+    transition: background-color 0.1s, border-color 0.1s;
+}
+
+.mg-videos-item>.seqnum {
+    flex: 0 0 auto;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 25px;    
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: left;
+    color: rgb(215, 215, 215);
+}
+
+.mg-videos-item>.title {
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.mg-videos-item:hover {
+    background-color: #666a80;
+    border-color: #666a80;
+}
+
+.mg-videos-item-watched {
+    background-color: hsl(128, 11%, 31%);
+    border-color: hsl(128, 11%, 31%);
+} 
+
+.mg-videos-item-watched:hover {
+    background-color: hsl(128, 11%, 45%);
+    border-color: hsl(128, 11%, 45%);
+}

@@ -1,3 +1,4 @@
+use crate::covers;
 use crate::SharedConfig;
 use actix_web::{get, web, Error, HttpRequest, HttpResponse, Responder};
 use futures::future::{ready, Ready};
@@ -39,7 +40,7 @@ pub async fn index(config: web::Data<SharedConfig>) -> Option<IndexResponse> {
             list.push(IndexListItem {
                 uid: uid.clone(),
                 name: mg.name.clone(),
-                has_cover: mg.cover.is_some(),
+                has_cover: mg.cover.is_some() || covers::get_path(uid).exists(),
             });
         }
     }

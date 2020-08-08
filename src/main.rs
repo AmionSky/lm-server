@@ -1,8 +1,10 @@
 #![windows_subsystem = "windows"]
 
 mod config;
+mod covers;
 mod error;
 mod ignite;
+mod moviedb;
 mod pages;
 mod watcher;
 
@@ -19,7 +21,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     attach_console();
 
     TermLogger::init(
-        LevelFilter::Debug,
+        LevelFilter::Info,
         LoggerConfig::default(),
         TerminalMode::Mixed,
     )?;
@@ -30,6 +32,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     let cfg = Arc::new(ShardedLock::new(cfg));
     let _watcher = watcher::watch(cfg.clone())?;
 
+    std::fs::create_dir(covers::FOLDER).ok();
+    covers::check(cfg.clone())?;
     ignite::start(cfg)?;
 
     Ok(())

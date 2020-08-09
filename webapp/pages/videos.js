@@ -1,5 +1,6 @@
 import { replacePage, getJsonFromUrl, getGroupUrl, getCoverUrl } from "../common.js";
 import { onFetchError } from "./error.js";
+import { setCurrentPage } from "../index.js";
 
 const store = {};
 
@@ -16,6 +17,7 @@ export async function showVideosPage(uid) {
     grid.appendChild(createVideoList(uid, json.videos));
     grid.id = "mg-grid";
     replacePage(grid);
+    setCurrentPage("videos");
 }
 
 function createVideoList(groupId, videos) {

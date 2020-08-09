@@ -16,7 +16,7 @@ export function replacePage(to) {
 }
 
 export function getRoot() {
-    return document.getElementById("window-content");
+    return document.body;
 }
 
 export function clearHtml() {

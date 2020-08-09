@@ -1,6 +1,11 @@
 import { showCollectionsPage } from "./pages/collections.js";
 import { showVideosPage } from "./pages/videos.js";
-import { getRoot } from "./common.js"
+import { getRoot } from "./common.js";
+
+let currentPage = "none";
+export function setCurrentPage(pageName) {
+    currentPage = pageName;
+}
 
 // If notify isn't implemented, make a dummy implementation
 if (window.external["notify"] == undefined) {
@@ -8,10 +13,7 @@ if (window.external["notify"] == undefined) {
 }
 
 // Handle window navigation
-window.onpopstate = (event) => {
-    if (event.state != null) {
-        window.location.hash = event.state;
-    }
+window.onpopstate = (_) => {
     load();
 }
 
@@ -21,21 +23,31 @@ async function load() {
 
     // Load the requested page
     if (collection != undefined) {
-        await showVideosPage(collection);
+        if (currentPage !== "videos") {
+            await showVideosPage(collection);
+        }
     } else {
-        await showCollectionsPage();
+        if (currentPage !== "collections") {
+            await showCollectionsPage();
+        }
 
         // Scroll
         if (window.location.hash != "") {
             // Scroll to the specified hash
-            let element = window.document.querySelector(window.location.hash);
-            if (element != undefined) {
-                element.scrollIntoView();
-            }
+            scrollToElement(window.location.hash);
         } else {
             // Scroll to top
+            // Needs overflow: auto; on root to work.
             getRoot().scrollTo({ top: 0, behavior: "smooth" });
         }
+    }
+}
+
+// Scroll to element by id
+function scrollToElement(id) {
+    let element = window.document.querySelector(id);
+    if (element != undefined) {
+        element.scrollIntoView();
     }
 }
 

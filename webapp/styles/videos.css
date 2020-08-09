@@ -1,22 +1,19 @@
 #mg-grid {
     display: flex;
-    flex: 1 1 auto;
-    flex-direction: row;
+    flex-direction: column;
 }
 
 #mg-cover {
-    position: absolute;
+    position: fixed;
     overflow: hidden;
-    width: 42%;
-    height: 100%;
+    width: 38%;
+    height: 100vh;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
 }
 
 #mg-cover>#mg-cover-shadow {
-    position: absolute;
-    left: 0px;
     background: linear-gradient(to left,
         rgba(51, 53, 64, 1.000) 0px,
         rgba(51, 53, 64, 0.000) 8px
@@ -28,20 +25,19 @@
 #mg-videos {
     overflow-y: auto;
     overflow-x: hidden;
-    display: flex;
-    flex: 1 1 auto;
-    flex-direction: column;
-    padding-left: calc(42% + 10px);
-    padding-right: 10px;
-    padding-top: 10px;
+    display: grid;
+    grid-gap: 10px;
+    grid-column: auto;
+    padding: 10px;
+    padding-left: calc(38% + 10px);
 }
 
 .mg-videos-item {
     font-family: 'Noto Sans';
     font-size: 14px;
+    min-width: 0;
     display: flex;
-    flex: 0 0 auto;
-    margin-bottom: 10px;
+    flex: 1 1 auto;
     align-items: center;
     background-color: #474a59;
     border: 0px solid #474a59;
@@ -53,9 +49,8 @@
 
 .mg-videos-item>.seqnum {
     flex: 0 0 auto;
-    padding-left: 10px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding: 10px;
+    padding-right: 0px;
     width: 25px;    
     border-right: 1px solid rgba(255, 255, 255, 0.1);
     border-top-left-radius: 4px;
@@ -68,10 +63,7 @@
 }
 
 .mg-videos-item>.title {
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin: 10px;
     white-space: nowrap;
     overflow: hidden;
 }
@@ -89,4 +81,23 @@
 .mg-videos-item-watched:hover {
     background-color: hsl(128, 11%, 45%);
     border-color: hsl(128, 11%, 45%);
+}
+
+@media only screen and (max-device-width: 560px) {
+    #mg-cover {
+        position: static;
+        width: 100%;
+        height: 67vh;
+    }
+
+    #mg-cover>#mg-cover-shadow {
+        background: linear-gradient(to top,
+            rgba(51, 53, 64, 1.000) 0px,
+            rgba(51, 53, 64, 0.000) 8px
+        );
+    }
+
+    #mg-videos {
+        padding-left: 10px;
+    }
 }

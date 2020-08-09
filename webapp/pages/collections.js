@@ -1,6 +1,7 @@
 import { replacePage, requestUrl, getJsonFromUrl, getCoverUrl } from "../common.js";
 import { onFetchError } from "./error.js";
 import { showVideosPage } from "./videos.js";
+import { setCurrentPage } from "../index.js";
 
 export async function showCollectionsPage() {
     // Get the response from server
@@ -32,6 +33,7 @@ export async function showCollectionsPage() {
     }
 
     replacePage(listElement);
+    setCurrentPage("collections");
 }
 
 function createMediaListItem(item) {
@@ -41,9 +43,9 @@ function createMediaListItem(item) {
     container.addEventListener("click", () => {
         // Push state describing the location on the page
         if (history.state == undefined) {
-            history.pushState(item.uid, "", "#" + item.uid);
+            history.pushState(null, "", "#" + item.uid);
         } else {
-            history.replaceState(item.uid, "", "#" + item.uid);
+            history.replaceState(null, "", "#" + item.uid);
         }
         // Push state describing the next page
         history.pushState(null, item.name, "?collection=" + item.uid);

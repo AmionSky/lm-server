@@ -60,7 +60,7 @@ fn search(input: &str) -> Result<String, Box<dyn Error>> {
     );
 
     let response = ureq::get(&url).timeout(Duration::from_secs(10)).call();
-    if response.ok() {
+    if let Ok(response) = response {
         let mut sres: SearchResponse = serde_json::from_reader(response.into_reader())?;
         if sres.total_results > 0 && !sres.results.is_empty() {
             return Ok(sres.results[0].poster_path.take().unwrap());

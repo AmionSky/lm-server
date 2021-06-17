@@ -10,7 +10,7 @@ mod watcher;
 
 use config::Config;
 use crossbeam_utils::sync::ShardedLock;
-use simplelog::{Config as LoggerConfig, LevelFilter, TermLogger, TerminalMode};
+use simplelog::{ColorChoice, Config as LoggerConfig, LevelFilter, TermLogger, TerminalMode};
 use std::error::Error;
 use std::sync::Arc;
 
@@ -24,6 +24,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         LevelFilter::Info,
         LoggerConfig::default(),
         TerminalMode::Mixed,
+        ColorChoice::Auto,
     )?;
 
     let cfg = config::load(config::path())?;

@@ -1,19 +1,19 @@
 use crate::moviedb;
 use crate::SharedConfig;
-use log::{warn,error};
+use log::{error, warn};
 use std::error::Error;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::time::Duration;
 
-pub const FOLDER:&str = "covers";
+pub const FOLDER: &str = "covers";
 
 pub fn check(app_cfg: SharedConfig) -> Result<(), Box<dyn Error>> {
     let cfg = app_cfg.read().unwrap();
     for (key, value) in &cfg.shared {
         let cover_path = get_path(key);
         if value.cover.is_none() && !cover_path.exists() {
-            if let Err(err) = download_cover(&cover_path,&value.name) {
-                error!("{}",err);
+            if let Err(err) = download_cover(&cover_path, &value.name) {
+                error!("{}", err);
             }
         }
     }
@@ -21,10 +21,10 @@ pub fn check(app_cfg: SharedConfig) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn download_cover(cover_path: &PathBuf, name: &str) -> Result<(), Box<dyn Error>> {
+fn download_cover(cover_path: &Path, name: &str) -> Result<(), Box<dyn Error>> {
     let url = moviedb::cover_url(name, moviedb::PosterSize::Original)?;
     let response = ureq::get(&url).timeout(Duration::from_secs(10)).call();
-    if response.ok() {
+    if let Ok(response) = response {
         let mut cover = std::fs::File::create(cover_path)?;
         std::io::copy(&mut response.into_reader(), &mut cover)?;
     } else {
